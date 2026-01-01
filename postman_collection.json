@@ -1,0 +1,222 @@
+﻿{
+  "info": {
+    "name": "Schedulr - Interview Scheduler API",
+    "description": "Complete API collection for Schedulr - AI-Powered Interview Scheduling Platform.\n\n## Getting Started\n1. Import this collection into Postman\n2. Run 'Register' and 'Login' first to get auth token\n3. Token is automatically saved after login\n\n## Authentication\nAll protected endpoints require Bearer token.",
+    "version": "2.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:5000/api"},
+    {"key": "token", "value": ""},
+    {"key": "candidateId", "value": ""},
+    {"key": "interviewerId", "value": ""},
+    {"key": "interviewId", "value": ""},
+    {"key": "availabilityId", "value": ""}
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register Candidate",
+          "event": [{"listen": "test", "script": {"exec": ["var jsonData = pm.response.json();", "if (jsonData.token) pm.collectionVariables.set('token', jsonData.token);", "if (jsonData.user) pm.collectionVariables.set('candidateId', jsonData.user._id);"], "type": "text/javascript"}}],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"candidate@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"role\": \"candidate\",\n  \"timezone\": \"America/New_York\",\n  \"skills\": [\"JavaScript\", \"React\", \"Node.js\"]\n}"},
+            "url": {"raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"]}
+          }
+        },
+        {
+          "name": "Register Interviewer",
+          "event": [{"listen": "test", "script": {"exec": ["var jsonData = pm.response.json();", "if (jsonData.token) pm.collectionVariables.set('token', jsonData.token);", "if (jsonData.user) pm.collectionVariables.set('interviewerId', jsonData.user._id);"], "type": "text/javascript"}}],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"interviewer@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"role\": \"interviewer\",\n  \"timezone\": \"America/New_York\",\n  \"department\": \"Engineering\"\n}"},
+            "url": {"raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"]}
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{"listen": "test", "script": {"exec": ["var jsonData = pm.response.json();", "if (jsonData.token) pm.collectionVariables.set('token', jsonData.token);"], "type": "text/javascript"}}],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"interviewer@example.com\",\n  \"password\": \"SecurePass123!\"\n}"},
+            "url": {"raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"]}
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"]}
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"timezone\": \"America/Los_Angeles\",\n  \"skills\": [\"System Design\", \"Algorithms\", \"Leadership\"]\n}"},
+            "url": {"raw": "{{baseUrl}}/auth/profile", "host": ["{{baseUrl}}"], "path": ["auth", "profile"]}
+          }
+        },
+        {
+          "name": "Get All Candidates",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/auth/candidates", "host": ["{{baseUrl}}"], "path": ["auth", "candidates"]}
+          }
+        },
+        {
+          "name": "Get All Interviewers",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/auth/interviewers", "host": ["{{baseUrl}}"], "path": ["auth", "interviewers"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "📅 Availability",
+      "item": [
+        {
+          "name": "Get My Availability",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/availability", "host": ["{{baseUrl}}"], "path": ["availability"]}
+          }
+        },
+        {
+          "name": "Add Availability",
+          "event": [{"listen": "test", "script": {"exec": ["var jsonData = pm.response.json();", "if (jsonData.availability) pm.collectionVariables.set('availabilityId', jsonData.availability._id);"], "type": "text/javascript"}}],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"weekOf\": \"2026-01-05T00:00:00.000Z\",\n  \"slots\": [\n    {\"start\": \"2026-01-06T14:00:00.000Z\", \"end\": \"2026-01-06T18:00:00.000Z\"},\n    {\"start\": \"2026-01-07T14:00:00.000Z\", \"end\": \"2026-01-07T17:00:00.000Z\"},\n    {\"start\": \"2026-01-08T09:00:00.000Z\", \"end\": \"2026-01-08T12:00:00.000Z\"}\n  ]\n}"},
+            "url": {"raw": "{{baseUrl}}/availability", "host": ["{{baseUrl}}"], "path": ["availability"]}
+          }
+        },
+        {
+          "name": "Parse Availability (AI)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"text\": \"I'm available Monday and Wednesday from 9am to 5pm, and Friday afternoon after 2pm until 6pm\"\n}"},
+            "url": {"raw": "{{baseUrl}}/availability/parse", "host": ["{{baseUrl}}"], "path": ["availability", "parse"]}
+          }
+        },
+        {
+          "name": "Save Parsed Availability",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"slots\": [\n    {\"start\": \"2026-01-06T14:00:00.000Z\", \"end\": \"2026-01-06T22:00:00.000Z\"},\n    {\"start\": \"2026-01-08T14:00:00.000Z\", \"end\": \"2026-01-08T22:00:00.000Z\"}\n  ],\n  \"rawInput\": \"Monday and Wednesday 9am-5pm\"\n}"},
+            "url": {"raw": "{{baseUrl}}/availability/save-parsed", "host": ["{{baseUrl}}"], "path": ["availability", "save-parsed"]}
+          }
+        },
+        {
+          "name": "Delete Availability",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/availability/{{availabilityId}}", "host": ["{{baseUrl}}"], "path": ["availability", "{{availabilityId}}"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎯 Matching",
+      "item": [
+        {
+          "name": "Find Optimal Slots",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"candidateId\": \"{{candidateId}}\",\n  \"interviewerId\": \"{{interviewerId}}\",\n  \"duration\": 60\n}"},
+            "url": {"raw": "{{baseUrl}}/matching/find-slots", "host": ["{{baseUrl}}"], "path": ["matching", "find-slots"]}
+          }
+        },
+        {
+          "name": "Propose Interview",
+          "event": [{"listen": "test", "script": {"exec": ["var jsonData = pm.response.json();", "if (jsonData.interview) pm.collectionVariables.set('interviewId', jsonData.interview._id);"], "type": "text/javascript"}}],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"candidateId\": \"{{candidateId}}\",\n  \"interviewerId\": \"{{interviewerId}}\",\n  \"proposedSlots\": [\n    {\"start\": \"2026-01-06T15:00:00.000Z\", \"end\": \"2026-01-06T16:00:00.000Z\", \"score\": 95},\n    {\"start\": \"2026-01-07T14:00:00.000Z\", \"end\": \"2026-01-07T15:00:00.000Z\", \"score\": 88},\n    {\"start\": \"2026-01-08T10:00:00.000Z\", \"end\": \"2026-01-08T11:00:00.000Z\", \"score\": 82}\n  ],\n  \"type\": \"technical\",\n  \"meetingLink\": \"https://zoom.us/j/123456789\",\n  \"notes\": \"Please prepare for coding questions on algorithms and data structures.\"\n}"},
+            "url": {"raw": "{{baseUrl}}/matching/propose", "host": ["{{baseUrl}}"], "path": ["matching", "propose"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Interviews",
+      "item": [
+        {
+          "name": "Get All Interviews",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/interviews", "host": ["{{baseUrl}}"], "path": ["interviews"]}
+          }
+        },
+        {
+          "name": "Get Interview by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/interviews/{{interviewId}}", "host": ["{{baseUrl}}"], "path": ["interviews", "{{interviewId}}"]}
+          }
+        },
+        {
+          "name": "Select Time Slot (Candidate)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"slotIndex\": 0\n}"},
+            "url": {"raw": "{{baseUrl}}/interviews/{{interviewId}}/select-slot", "host": ["{{baseUrl}}"], "path": ["interviews", "{{interviewId}}", "select-slot"]}
+          }
+        },
+        {
+          "name": "Confirm Interview",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"scheduledTime\": {\n    \"start\": \"2026-01-06T15:00:00.000Z\",\n    \"end\": \"2026-01-06T16:00:00.000Z\"\n  },\n  \"meetingLink\": \"https://zoom.us/j/123456789\"\n}"},
+            "url": {"raw": "{{baseUrl}}/interviews/{{interviewId}}/confirm", "host": ["{{baseUrl}}"], "path": ["interviews", "{{interviewId}}", "confirm"]}
+          }
+        },
+        {
+          "name": "Cancel Interview",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/interviews/{{interviewId}}/cancel", "host": ["{{baseUrl}}"], "path": ["interviews", "{{interviewId}}", "cancel"]}
+          }
+        },
+        {
+          "name": "Submit Feedback",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"rating\": 4,\n  \"comments\": \"Excellent candidate with strong technical skills. Good communication and problem-solving abilities.\"\n}"},
+            "url": {"raw": "{{baseUrl}}/interviews/{{interviewId}}/feedback", "host": ["{{baseUrl}}"], "path": ["interviews", "{{interviewId}}", "feedback"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "❤️ Health Check",
+      "request": {
+        "method": "GET",
+        "url": {"raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"]}
+      }
+    }
+  ]
+}
